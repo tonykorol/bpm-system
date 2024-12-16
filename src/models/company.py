@@ -1,10 +1,13 @@
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models.base import BaseModel
-from src.models.user import UserModel
+
+if TYPE_CHECKING:
+    from src.models.user import UserModel
 
 
 class CompanyModel(BaseModel):
@@ -15,4 +18,4 @@ class CompanyModel(BaseModel):
     created_at: Mapped[datetime]
     updated_at: Mapped[datetime]
 
-    users: Mapped[list["UserModel"]] = relationship(back_populates='company')
+    users: Mapped[list["UserModel"]] = relationship(back_populates="company")

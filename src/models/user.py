@@ -1,8 +1,7 @@
 from datetime import datetime
 
 from base import BaseModel
-from sqlalchemy import String, ForeignKey
-
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models.company import CompanyModel
@@ -19,5 +18,5 @@ class UserModel(BaseModel):
     created_at: Mapped[datetime]
     updated_at: Mapped[datetime]
 
-    company_id: Mapped[int] = mapped_column(ForeignKey('companies.id', ondelete="CASCADE"))
+    company_id: Mapped[int] = mapped_column(ForeignKey("companies.id", ondelete="CASCADE"))
     company: Mapped[CompanyModel] = relationship(back_populates="users")
