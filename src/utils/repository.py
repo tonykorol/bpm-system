@@ -11,26 +11,29 @@ if TYPE_CHECKING:
 
 class AbstractRepository(ABC):
     @abstractmethod
-    def add_one(self, *args: Any, **kwargs: Any) -> Never:
+    async def add_one(self, *args: Any, **kwargs: Any) -> Never:
         raise NotImplementedError
 
     @abstractmethod
-    def add_one_and_get_id(self, *args: Any, **kwargs: Any) -> Never:
+    async def add_one_and_get_id(self, *args: Any, **kwargs: Any) -> Never:
         raise NotImplementedError
 
-    def add_one_and_get_object(self, *args: Any, **kwargs: Any) -> Never:
+    async def add_one_and_get_object(self, *args: Any, **kwargs: Any) -> Never:
         raise NotImplementedError
 
-    @abstractmethod
-    def get_by_query_all(self, *args: Any, **kwargs: Any) -> Never:
-        raise NotImplementedError
-
-    @abstractmethod
-    def update_one_by_id(self, *args: Any, **kwargs: Any) -> Never:
+    async def get_by_query_one_or_none(self, *args: Any, **kwargs: Any) -> Never:
         raise NotImplementedError
 
     @abstractmethod
-    def delete_one_by_id(self, *args: Any, **kwargs: Any) -> Never:
+    async def get_by_query_all(self, *args: Any, **kwargs: Any) -> Never:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def update_one_by_id(self, *args: Any, **kwargs: Any) -> Never:
+        raise NotImplementedError
+
+    @abstractmethod
+    async def delete_one_by_id(self, *args: Any, **kwargs: Any) -> Never:
         raise NotImplementedError
 
 
@@ -53,6 +56,11 @@ class SqlAlchemyRepository(AbstractRepository):
         query = insert(self.model).values(**kwargs).returning(self.model)
         obj: Result = await self.session.execute(query)
         return obj.scalar_one()
+
+    async def get_by_query_one_or_none(self, **kwargs: Any) -> Any | None:
+        query = select(self.model).filter_by(**kwargs)
+        res: Result = await self.session.execute(query)
+        return res.scalar_one_or_none()
 
     async def get_by_query_all(self, **kwargs: Any) -> Sequence[model]:
         query = select(self.model).filter_by(**kwargs)

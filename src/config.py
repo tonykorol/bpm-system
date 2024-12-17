@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
 
+    SMTP_SERVER: str
+    SMTP_PORT: int
+    SMTP_USER: str
+    SMTP_PASS: str
+
     model_config = ConfigDict(env_file=".env")
 
     @property
