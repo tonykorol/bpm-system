@@ -69,7 +69,7 @@ class SqlAlchemyRepository(AbstractRepository):
 
     async def update_one_by_id(self, obj_id: int, **kwargs: Any) -> model:
         query = update(self.model).filter(self.model.id == obj_id).values(**kwargs).returning(self.model)
-        obj: Result = self.session.execute(query)
+        obj: Result = await self.session.execute(query)
         return obj.scalar_one()
 
     async def delete_one_by_id(self, obj_id: int) -> None:

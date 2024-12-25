@@ -17,5 +17,6 @@ class CompanyCreateSchema(CompanyBaseSchema):
 class CompanySchema(CompanyBaseSchema):
     id: int
 
+
 class CompanyWithUsersSchema(CompanySchema):
     users: list["UserSchema"] = Field(default_factory=list)

@@ -30,5 +30,4 @@ class SignUpCompleteRequest(BaseModel):
 
 
 class SignUpCompleteResponse(BaseModel):
-    user: UserSchema
     company: CompanySchema

@@ -23,7 +23,7 @@ class UserModel(BaseModel):
     last_name: Mapped[str] = mapped_column(String(50))
     email: Mapped[str] = mapped_column(String(256), unique=True)
     role: Mapped[UserRole] = mapped_column(SQLEnum(UserRole), default=UserRole.USER)
-    password: Mapped[str]
+    password: Mapped[str] = mapped_column(nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now())
 
