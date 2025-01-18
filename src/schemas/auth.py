@@ -1,7 +1,6 @@
 from pydantic import BaseModel, EmailStr, Field
 
 from src.schemas.company import CompanySchema
-from src.schemas.user import UserSchema
 
 
 class CheckAccountResponse(BaseModel):
@@ -31,3 +30,8 @@ class SignUpCompleteRequest(BaseModel):
 
 class SignUpCompleteResponse(BaseModel):
     company: CompanySchema
+
+
+class AccessTokenScema(BaseModel):
+    token: str
+    token_type: str

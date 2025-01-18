@@ -5,6 +5,7 @@ from typing import Never, Any
 
 from src.database.db import async_session_maker
 from src.repositories.company import CompanyRepository
+from src.repositories.department import DepartmentRepository
 from src.repositories.invite import InviteRepository
 from src.repositories.user import UserRepository
 from src.utils.repository import SqlAlchemyRepository
@@ -46,6 +47,7 @@ class UnitOfWork(AbstractUnitOfWork):
         self.company = CompanyRepository(self.session)
         self.user = UserRepository(self.session)
         self.invite = InviteRepository(self.session)
+        self.department = DepartmentRepository(self.session)
 
     async def __aexit__(
             self,

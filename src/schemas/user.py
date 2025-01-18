@@ -23,7 +23,6 @@ class UserCreateWithoutPasswordRequest(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    company_id: int
 
 
 class UserCreateWithoutPasswordResponse(BaseModel):
@@ -37,3 +36,20 @@ class UserSetPasswordRequest(BaseModel):
 
 class UserSetPasswordResponse(BaseModel):
     payload: UserSchema
+
+
+class GetMeResponse(UserSchema):
+    role: str
+
+class UserAuthSchema(UserSchema):
+    password: str
+
+
+class UserUpdateRequest(BaseModel):
+    first_name: str
+    last_name: str
+
+
+class UserUpdateResponse(BaseModel):
+    payload: UserSchema
+

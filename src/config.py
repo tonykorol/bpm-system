@@ -1,4 +1,4 @@
-from pydantic import ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 
@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     SMTP_PASS: str
 
     model_config = ConfigDict(env_file=".env")
+
+    JWT_SECRET: str = Field(..., env="JWT_SECRET")
+    JWT_ALGORITHM: str = 'HS256'
+    token_expires_minutes: int = 30
 
     @property
     def DB_URL(self) -> str:

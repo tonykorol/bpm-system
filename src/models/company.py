@@ -8,7 +8,7 @@ from src.models.base import BaseModel
 from src.schemas.company import CompanySchema
 
 if TYPE_CHECKING:
-    from src.models.user import UserModel
+    from src.models import UserModel, DepartmentModel
 
 
 class CompanyModel(BaseModel):
@@ -20,6 +20,7 @@ class CompanyModel(BaseModel):
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now())
 
     users: Mapped[list["UserModel"]] = relationship(back_populates="company")
+    departments: Mapped[list["DepartmentModel"]] = relationship(back_populates="company")
 
     def to_pydantic_schema(self) -> CompanySchema:
         # Создайте словарь, исключая _sa_instance_state

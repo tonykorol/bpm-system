@@ -6,7 +6,7 @@ from src.models.user import UserRole, UserModel
 from src.schemas.auth import SignUpCompleteRequest
 from src.schemas.company import CompanyCreateSchema
 from src.schemas.user import UserCreateSchema
-from src.services.utils.password import hash_password
+from src.services.utils.auth import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
