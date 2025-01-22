@@ -8,7 +8,7 @@ from src.models.base import BaseModel
 from src.schemas.company import CompanySchema
 
 if TYPE_CHECKING:
-    from src.models import UserModel, DepartmentModel
+    from src.models import DepartmentModel, UserModel
 
 
 class CompanyModel(BaseModel):
@@ -24,5 +24,5 @@ class CompanyModel(BaseModel):
 
     def to_pydantic_schema(self) -> CompanySchema:
         # Создайте словарь, исключая _sa_instance_state
-        company_dict = {key: value for key, value in self.__dict__.items() if key != '_sa_instance_state'}
+        company_dict = {key: value for key, value in self.__dict__.items() if key != "_sa_instance_state"}
         return CompanySchema(**company_dict)

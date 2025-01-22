@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND
 
 from src.models import DepartmentModel
-from src.schemas.department import DepartmentCreateRequest, DepartmentUpdateRequest, DepartmentSetHeadRequest
+from src.schemas.department import DepartmentCreateRequest, DepartmentSetHeadRequest, DepartmentUpdateRequest
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
@@ -13,7 +13,6 @@ class DepartmentService(BaseService):
     @transaction_mode
     async def check_department_has_child(self, department: DepartmentModel) -> bool:
         return await self.uow.department.check_department_has_child(department)
-
 
     @transaction_mode
     async def create_department(self, department_data: DepartmentCreateRequest) -> DepartmentModel:
@@ -35,7 +34,7 @@ class DepartmentService(BaseService):
         await self.get_department_by_id(dep_id)
         updated_department: DepartmentModel = await self.uow.department.update_one_by_id(
             dep_id,
-            **department_data.model_dump()
+            **department_data.model_dump(),
         )
         return updated_department
 
@@ -72,4 +71,3 @@ class DepartmentService(BaseService):
             payload.user_id,
         )
         return updated_department
-

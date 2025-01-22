@@ -1,7 +1,7 @@
 import functools
 from abc import ABC, abstractmethod
 from types import TracebackType
-from typing import Never, Any
+from typing import Any, Never
 
 from src.database.db import async_session_maker
 from src.repositories.company import CompanyRepository
@@ -9,7 +9,6 @@ from src.repositories.department import DepartmentRepository
 from src.repositories.invite import InviteRepository
 from src.repositories.position import PositionRepository
 from src.repositories.user import UserRepository
-from src.utils.repository import SqlAlchemyRepository
 
 
 class AbstractUnitOfWork(ABC):
@@ -68,6 +67,7 @@ class UnitOfWork(AbstractUnitOfWork):
 
     async def rollback(self) -> None:
         await self.session.rollback()
+
 
 def transaction_mode(func):
     """Decorate a function with transaction mode."""

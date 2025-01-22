@@ -1,15 +1,17 @@
 from datetime import datetime
 from enum import Enum
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from src.models.position import UserPosition
-from .base import BaseModel
-from sqlalchemy import ForeignKey, String, Enum as SQLEnum
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from src.models.position import UserPosition
+
+from .base import BaseModel
 
 if TYPE_CHECKING:
-    from src.models import CompanyModel, DepartmentModel, PositionModel
+    from src.models import CompanyModel, DepartmentModel
 
 
 class UserRole(Enum):
@@ -38,7 +40,7 @@ class UserModel(BaseModel):
     company_id: Mapped[int] = mapped_column(ForeignKey("companies.id", ondelete="CASCADE"), nullable=True)
     company: Mapped["CompanyModel"] = relationship(back_populates="users")
 
-    department_head: Mapped["DepartmentModel"] = relationship(back_populates="head", foreign_keys="DepartmentModel.head_id" )
+    department_head: Mapped["DepartmentModel"] = relationship(back_populates="head", foreign_keys="DepartmentModel.head_id")
 
     def to_pydantic_schema(self) -> Any:
         from ..schemas.user import UserSchema

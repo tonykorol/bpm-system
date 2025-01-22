@@ -4,8 +4,8 @@ from starlette.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 from src.models import UserModel
 from src.schemas.auth import TokenPayload
 from src.schemas.user import UserCreateWithoutPasswordRequest, UserSetPasswordRequest, UserUpdateRequest
-from src.services.utils.email_sender import send_email
 from src.services.utils.auth import hash_password
+from src.services.utils.email_sender import send_email
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
@@ -14,7 +14,7 @@ class UserService(BaseService):
     base_repository = "user"
 
     @staticmethod
-    async def check_user_is_company_admin(user:TokenPayload) -> bool:
+    async def check_user_is_company_admin(user: TokenPayload) -> bool:
         if user.role != "COMPANY_ADMIN":
             raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail="User must be COMPANY_ADMIN")
 
@@ -23,7 +23,7 @@ class UserService(BaseService):
             self,
             current_user: TokenPayload,
             user: UserCreateWithoutPasswordRequest,
-            company_id: int
+            company_id: int,
     ) -> UserModel:
         await self.check_user_is_company_admin(current_user)
 
@@ -31,7 +31,7 @@ class UserService(BaseService):
         if user_exist:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
-                detail="User already exists"
+                detail="User already exists",
             )
 
         user: UserModel = await self.uow.user.add_one_and_get_object(**user.model_dump(), company_id=company_id)
@@ -42,7 +42,7 @@ class UserService(BaseService):
 
     @staticmethod
     async def send_set_password_email(user: UserModel) -> None:
-        email_body = f'Для завершения регистрации перейдите по ссылке: "ссылка"'
+        email_body = 'Для завершения регистрации перейдите по ссылке: "ссылка"'
         send_email(user.email, "Set your password", email_body)
 
     @transaction_mode
@@ -51,7 +51,7 @@ class UserService(BaseService):
         if not user:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
-                detail="User does not exists"
+                detail="User does not exists",
             )
         password = hash_password(credentials.password).decode()
         return await self.uow.user.update_one_by_id(user.id, password=password)

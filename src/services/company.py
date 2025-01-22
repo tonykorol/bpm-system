@@ -2,15 +2,14 @@ from fastapi import HTTPException
 from starlette.status import HTTP_400_BAD_REQUEST
 
 from src.models import CompanyModel
-from src.models.user import UserRole, UserModel
+from src.models.user import UserRole
 from src.schemas.auth import SignUpCompleteRequest
 from src.schemas.company import CompanyCreateSchema
 from src.schemas.user import UserCreateSchema
+from src.services.invite import InviteService
 from src.services.utils.auth import hash_password
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
-
-from src.services.invite import InviteService
 
 
 class CompanyService(BaseService):
@@ -34,7 +33,7 @@ class CompanyService(BaseService):
         if company_exist:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
-                detail=f"Company with name {payload.company_name} already exists"
+                detail=f"Company with name {payload.company_name} already exists",
             )
 
         company_data = CompanyCreateSchema(name=payload.company_name)

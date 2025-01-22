@@ -42,6 +42,7 @@ class UserSetPasswordResponse(BaseModel):
 class GetMeResponse(UserSchema):
     role: str
 
+
 class UserAuthSchema(UserSchema):
     password: str
 
@@ -53,4 +54,3 @@ class UserUpdateRequest(BaseModel):
 
 class UserUpdateResponse(BaseModel):
     payload: UserSchema
-

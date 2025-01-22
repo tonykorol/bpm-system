@@ -1,10 +1,11 @@
 import secrets
+import string
 
 from fastapi import HTTPException
 from starlette.status import HTTP_400_BAD_REQUEST
 
-from src.services.utils.email_sender import send_email
 from src.models.invite import InviteModel
+from src.services.utils.email_sender import send_email
 from src.utils.service import BaseService
 from src.utils.unit_of_work import transaction_mode
 
@@ -22,7 +23,7 @@ class InviteService(BaseService):
         if existing_invite:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
-                detail="An active invite already exists for this email."
+                detail="An active invite already exists for this email.",
             )
         invite = await self.create_invite(email)
         await self.send_invite(invite)
@@ -37,11 +38,10 @@ class InviteService(BaseService):
 
     @transaction_mode
     async def create_invite(self, email) -> InviteModel:
-        invite_token = ''.join(secrets.choice('0123456789') for _ in range(6))
+        invite_token = "".join(secrets.choice(string.digits) for _ in range(6))
         return await self.uow.invite.add_one_and_get_object(token=invite_token, email=email)
 
     @staticmethod
     async def send_invite(invite: InviteModel):
         email_body = f"Здравствуйте! Ваш токен: {invite.token}. Благодарим за использование нашего сервиса."
         send_email(invite.email, "Your token", email_body)
-

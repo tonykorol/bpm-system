@@ -2,8 +2,7 @@ import bcrypt
 
 
 def hash_password(password: str) -> bytes:
-    """
-    Hash incoming password.
+    """Hash incoming password.
 
     :param password: plain password to hash.
     :return: hashed password.
@@ -12,8 +11,7 @@ def hash_password(password: str) -> bytes:
 
 
 def verify_password(password: str, hashed_password: bytes) -> bool:
-    """
-    Verify if incoming password is correct to hashed one.
+    """Verify if incoming password is correct to hashed one.
 
     :param password: plain password.
     :param hashed_password: hashed password.

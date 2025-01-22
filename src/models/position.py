@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import String, ForeignKey, Integer
+from sqlalchemy import ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.models import BaseModel
@@ -34,4 +34,3 @@ class UserPosition(BaseModel):
 
     user: Mapped["UserModel"] = relationship(back_populates="positions")
     position: Mapped["PositionModel"] = relationship(back_populates="users_positions")
-

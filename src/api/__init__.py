@@ -1,10 +1,6 @@
 from fastapi import APIRouter
 
-from src.api.v1.routers import auth_router
-from src.api.v1.routers import user_router
-from src.api.v1.routers import company_router
-from src.api.v1.routers import department_router
-from src.api.v1.routers import position_router
+from src.api.v1.routers import auth_router, company_router, department_router, position_router, user_router
 
 router = APIRouter()
 router.include_router(auth_router, prefix="/v1")

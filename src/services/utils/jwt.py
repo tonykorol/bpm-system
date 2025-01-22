@@ -21,8 +21,8 @@ def encode_jwt(
 
 def decode_jwt(
         token: str,
-        key = settings.JWT_SECRET,
-        algorithm = settings.JWT_ALGORITHM,
+        key=settings.JWT_SECRET,
+        algorithm=settings.JWT_ALGORITHM,
 ) -> dict[str | Any]:
     try:
         payload = jwt.decode(token, key, algorithms=[algorithm])

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import ConfigDict, Field
 from pydantic_settings import BaseSettings
 
 
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     model_config = ConfigDict(env_file=".env")
 
     JWT_SECRET: str = Field(..., env="JWT_SECRET")
-    JWT_ALGORITHM: str = 'HS256'
+    JWT_ALGORITHM: str = "HS256"
     token_expires_minutes: int = 1440
 
     @property

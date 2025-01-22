@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 
 from src.config import settings
 
+
 def send_email(email: str, subject: str, body: str):
     msg = MIMEText(body)
     msg["Subject"] = subject

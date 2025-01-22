@@ -55,9 +55,11 @@ ignore = [
     "D213", # multi-line-summary-second-line
     "D401", # non-imperative-mood
     "DOC501", # docstring-missing-exception
+    "EM101",
     "FAST002", # fast-api-non-annotated-dependency
     "INP001", # implicit-namespace-package
     "RUF009", # function-call-in-dataclass-default-argument
     "S101", # assert
     "S608", # hardcoded-sql-expression
+    "TRY003"
 ]

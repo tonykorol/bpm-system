@@ -1,19 +1,27 @@
 from fastapi import APIRouter, Depends
-from starlette.status import HTTP_201_CREATED, HTTP_200_OK
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
 from src.models import UserModel
 from src.schemas.auth import TokenPayload
-from src.schemas.user import UserCreateWithoutPasswordRequest, UserCreateWithoutPasswordResponse, \
-    UserSetPasswordRequest, UserSetPasswordResponse, GetMeResponse, UserUpdateResponse, UserUpdateRequest
+from src.schemas.user import (
+        GetMeResponse,
+        UserCreateWithoutPasswordRequest,
+        UserCreateWithoutPasswordResponse,
+        UserSetPasswordRequest,
+        UserSetPasswordResponse,
+        UserUpdateRequest,
+        UserUpdateResponse,
+)
 from src.services.auth import get_current_user
 from src.services.user import UserService
 
 router = APIRouter(prefix="/user", tags=["user"])
 
+
 @router.post(
     path="/create-user",
     status_code=HTTP_201_CREATED,
-    response_model=UserCreateWithoutPasswordResponse
+    response_model=UserCreateWithoutPasswordResponse,
 )
 async def create_user_without_password(
         new_user: UserCreateWithoutPasswordRequest,
@@ -27,7 +35,7 @@ async def create_user_without_password(
 @router.patch(
     path="/set-password",
     status_code=HTTP_200_OK,
-    response_model=UserSetPasswordResponse
+    response_model=UserSetPasswordResponse,
 )
 async def set_user_password(
         credentials: UserSetPasswordRequest,
@@ -40,7 +48,7 @@ async def set_user_password(
 @router.get(
     path="/me",
     status_code=HTTP_200_OK,
-    response_model=GetMeResponse
+    response_model=GetMeResponse,
 )
 async def get_me(current_user: TokenPayload = Depends(get_current_user)):
     return GetMeResponse(**current_user.model_dump())
