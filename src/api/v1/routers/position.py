@@ -1,37 +1,86 @@
 from fastapi import APIRouter, Depends
-from starlette.status import HTTP_200_OK
+from starlette.status import HTTP_200_OK, HTTP_201_CREATED
 
 from src.models import PositionModel
 from src.schemas.auth import TokenPayload
-from src.schemas.position import PositionCreateRequest, PositionCreateResponse
+from src.schemas.position import PositionCreateRequest, PositionResponse, PositionUpdateRequest, PositionDeleteResponse, \
+    PositionAssignResponse, PositionAssignRequest
 from src.services.auth import get_current_user
 from src.services.position import PositionService
+
 
 router = APIRouter(prefix='/position', tags=['Positions'])
 
 
 @router.post(
     path='/',
-    status_code=HTTP_200_OK,
-    response_model=PositionCreateResponse
+    status_code=HTTP_201_CREATED,
+    response_model=PositionResponse
 )
 async def create_position(
         position_data: PositionCreateRequest,
-        current_user: TokenPayload = Depends(get_current_user),
-        service: PositionService = Depends(PositionService)
+        # current_user: TokenPayload = Depends(get_current_user),
+        service: PositionService = Depends(PositionService),
 ):
-    position: PositionModel = await service.create_position(current_user, position_data)
-    return PositionCreateResponse(position=position.to_pydantic_schema())
+    position: PositionModel = await service.create_position(position_data)
+    return PositionResponse(payload=position.to_pydantic_schema())
 
 
-# @router.post(
-#     path='/{position_id}/assign',
-#     status_code=HTTP_200_OK,
-#     # response_model=
-# )
-# async def assign_position(
-#         assignee: PositionAssignRequest,
-#         # current_user: TokenPayload = Depends(get_current_user),
-#         service: PositionService = Depends(PositionService)
-# ):
-#     return await service.assign_user_to_position(user_id=assignee.user_id, position_id=assignee.position_id)
+@router.get(
+    path='/{pos_id}',
+    status_code=HTTP_200_OK,
+    response_model=PositionResponse
+)
+async def get_position(
+        pos_id: int,
+        # current_user: TokenPayload = Depends(get_current_user),
+        service: PositionService = Depends(PositionService),
+):
+    position: PositionModel = await service.get_position_by_id(pos_id)
+    return PositionResponse(payload=position.to_pydantic_schema())
+
+
+@router.patch(
+    path='/{pos_id}',
+    status_code=HTTP_200_OK,
+    response_model=PositionResponse,
+)
+async def update_position(
+        pos_id: int,
+        position_data: PositionUpdateRequest,
+        # current_user: TokenPayload = Depends(get_current_user),
+        service: PositionService = Depends(PositionService),
+):
+    updated_position: PositionModel = await service.update_position(pos_id, position_data)
+    return PositionResponse(payload=updated_position.to_pydantic_schema())
+
+
+@router.delete(
+    path='/{pos_id}',
+    status_code=HTTP_200_OK,
+    response_model=PositionDeleteResponse,
+)
+async def delete_position(
+        pos_id: int,
+        # current_user: TokenPayload = Depends(get_current_user),
+        service: PositionService = Depends(PositionService),
+):
+    status = await service.delete_position(pos_id)
+    return PositionDeleteResponse(status=status)
+
+
+@router.post(
+    path='/assign',
+    status_code=HTTP_200_OK,
+    response_model=PositionAssignResponse,
+)
+async def assign_user_to_position(
+        payload: PositionAssignRequest,
+        # current_user: TokenPayload = Depends(get_current_user),
+        service: PositionService = Depends(PositionService),
+):
+    position: PositionModel = await service.assign_user_to_position(payload)
+    return PositionAssignResponse(
+        user_id=payload.user_id,
+        position=position.to_pydantic_schema()
+    )

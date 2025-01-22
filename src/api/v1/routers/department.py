@@ -69,7 +69,7 @@ async def delete_department(
 
 
 @router.post(
-    path='/{department_id}/set_head',
+    path='/set_head',
     status_code=HTTP_200_OK,
     response_model=DepartmentResponse,
 )

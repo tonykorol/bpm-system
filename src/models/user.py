@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, TYPE_CHECKING
 
+from src.models.position import UserPosition
 from .base import BaseModel
 from sqlalchemy import ForeignKey, String, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -29,8 +30,7 @@ class UserModel(BaseModel):
     created_at: Mapped[datetime] = mapped_column(default=datetime.now())
     updated_at: Mapped[datetime] = mapped_column(default=datetime.now())
 
-    position_id: Mapped[int] = mapped_column(ForeignKey("positions.id"), nullable=True)
-    position: Mapped["PositionModel"] = relationship(back_populates="employees")
+    positions: Mapped[list["UserPosition"]] = relationship(back_populates="user")
 
     department_id: Mapped[int] = mapped_column(ForeignKey("departments.id"), nullable=True)
     department: Mapped["DepartmentModel"] = relationship(back_populates="employees", foreign_keys="UserModel.department_id")
