@@ -13,14 +13,28 @@ from src.utils.unit_of_work import transaction_mode
 
 
 class CompanyService(BaseService):
+    """Service class for managing company-related operations.
+    """
+
     base_repository = "company"
 
     def __init__(self):
+        """Initialize the CompanyService and its dependencies.
+        """
         super().__init__()
         self.invite_service: InviteService = InviteService()
 
     @transaction_mode
     async def check_email(self, email: str) -> bool:
+        """Check if an email is associated with an existing account and send an invitation if not.
+
+        Args:
+            email (str): The email to check.
+
+        Returns:
+            bool: True if the email does not exist in the system and an invite was sent, False otherwise.
+
+        """
         account = await self.uow.user.get_by_query_one_or_none(email=email)
         if not account:
             await self.invite_service.create_and_send_invite(email)
@@ -29,6 +43,18 @@ class CompanyService(BaseService):
 
     @transaction_mode
     async def create_company_and_user(self, payload: SignUpCompleteRequest) -> CompanyModel:
+        """Create a new company and its administrator user.
+
+        Args:
+            payload (SignUpCompleteRequest): The request payload containing company and user details.
+
+        Returns:
+            CompanyModel: The newly created company object.
+
+        Raises:
+            HTTPException: If a company with the same name already exists.
+
+        """
         company_exist = await self.uow.company.get_by_query_one_or_none(name=payload.company_name)
         if company_exist:
             raise HTTPException(
