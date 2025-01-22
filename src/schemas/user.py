@@ -9,6 +9,7 @@ class UserBaseSchema(BaseModel):
     email: EmailStr
     company_id: int
     role: UserRole
+    department_id: int | None = None
 
 
 class UserSchema(UserBaseSchema):

@@ -7,6 +7,7 @@ from src.database.db import async_session_maker
 from src.repositories.company import CompanyRepository
 from src.repositories.department import DepartmentRepository
 from src.repositories.invite import InviteRepository
+from src.repositories.position import PositionRepository
 from src.repositories.user import UserRepository
 from src.utils.repository import SqlAlchemyRepository
 
@@ -48,6 +49,7 @@ class UnitOfWork(AbstractUnitOfWork):
         self.user = UserRepository(self.session)
         self.invite = InviteRepository(self.session)
         self.department = DepartmentRepository(self.session)
+        self.position = PositionRepository(self.session)
 
     async def __aexit__(
             self,

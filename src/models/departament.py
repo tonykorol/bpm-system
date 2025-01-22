@@ -14,10 +14,11 @@ class DepartmentModel(BaseModel):
     __tablename__ = 'departments'
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String, nullable=False)
+    name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     path: Mapped[Ltree] = mapped_column(LtreeType)
     company_id: Mapped[int] = mapped_column(ForeignKey("companies.id"))
-    head_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    head_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=True)
+    parent_department_id: Mapped[int] = mapped_column(ForeignKey('departments.id'), nullable=True)
 
     positions: Mapped[list["PositionModel"]] = relationship(back_populates="department")
     employees: Mapped[list["UserModel"]] = relationship(back_populates="department", foreign_keys="UserModel.department_id")

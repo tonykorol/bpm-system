@@ -2,7 +2,9 @@ __all__ = [
     'BaseModel',
     'CompanyModel',
     'UserModel',
-    'InviteModel'
+    'InviteModel',
+    'DepartmentModel',
+    'PositionModel'
 ]
 
 from src.models.base import BaseModel

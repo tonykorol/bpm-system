@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from starlette.status import HTTP_201_CREATED, HTTP_200_OK
 
 from src.models import UserModel
-from src.models.user import UserRole
+from src.schemas.auth import TokenPayload
 from src.schemas.user import UserCreateWithoutPasswordRequest, UserCreateWithoutPasswordResponse, \
     UserSetPasswordRequest, UserSetPasswordResponse, GetMeResponse, UserUpdateResponse, UserUpdateRequest
 from src.services.auth import get_current_user
@@ -17,11 +17,10 @@ router = APIRouter(prefix="/user", tags=["user"])
 )
 async def create_user_without_password(
         new_user: UserCreateWithoutPasswordRequest,
-        current_user: dict = Depends(get_current_user),
+        current_user: TokenPayload = Depends(get_current_user),
         service: UserService = Depends(UserService),
 ):
-    if current_user and current_user['role'] == UserRole.COMPANY_ADMIN.name:
-        user: UserModel = await service.create_user_without_password(new_user, company_id=current_user['company_id'])
+        user: UserModel = await service.create_user_without_password(current_user, new_user, company_id=current_user.company_id)
         return UserCreateWithoutPasswordResponse(payload=user.to_pydantic_schema())
 
 
@@ -43,8 +42,8 @@ async def set_user_password(
     status_code=HTTP_200_OK,
     response_model=GetMeResponse
 )
-async def get_me(current_user: dict = Depends(get_current_user)):
-    return GetMeResponse.model_validate(current_user)
+async def get_me(current_user: TokenPayload = Depends(get_current_user)):
+    return GetMeResponse(**current_user.model_dump())
 
 
 @router.put(
@@ -54,7 +53,7 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 )
 async def update_me(
         update_data: UserUpdateRequest,
-        current_user: dict = Depends(get_current_user),
+        current_user: TokenPayload = Depends(get_current_user),
         user_service: UserService = Depends(UserService),
 ):
     updated_user: UserModel = await user_service.update_user_info(current_user, update_data)

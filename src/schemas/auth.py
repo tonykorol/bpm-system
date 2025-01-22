@@ -35,3 +35,13 @@ class SignUpCompleteResponse(BaseModel):
 class AccessTokenScema(BaseModel):
     token: str
     token_type: str
+
+
+class TokenPayload(BaseModel):
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    company_id: int
+    role: str
+    department_id: int | None

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -18,3 +18,8 @@ class PositionModel(BaseModel):
 
     department: Mapped["DepartmentModel"] = relationship(back_populates="positions")
     employees: Mapped[list["UserModel"]] = relationship(back_populates="position")
+
+    def to_pydantic_schema(self) -> Any:
+        from ..schemas.position import PositionSchema
+
+        return PositionSchema(**self.__dict__)

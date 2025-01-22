@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordBearer, HTTPBearer, HTTPAuthorization
 from starlette.status import HTTP_401_UNAUTHORIZED
 
 from src.models import UserModel
+from src.schemas.auth import TokenPayload
 from src.services.utils.auth import verify_password
 from src.services.utils.jwt import encode_jwt, decode_jwt
 from src.utils.service import BaseService
@@ -10,6 +11,8 @@ from src.utils.unit_of_work import transaction_mode
 
 
 class AuthService(BaseService):
+    base_repository = "auth"
+
     @transaction_mode
     async def authenticate_user(self, email: str, password: str) -> UserModel | None:
         user = await self.uow.user.get_by_query_one_or_none(email=email)
@@ -26,6 +29,7 @@ class AuthService(BaseService):
             "email": user.email,
             "company_id": user.company_id,
             "role": user.role.name,
+            "department_id": user.department_id,
         }
         token = encode_jwt(payload)
         return token
@@ -33,10 +37,10 @@ class AuthService(BaseService):
 
 oauth2_scheme = HTTPBearer()
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme)):
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(oauth2_scheme)) -> TokenPayload:
     token = credentials.credentials
     try:
-        payload = decode_jwt(token)
+        payload: TokenPayload = TokenPayload.model_validate(decode_jwt(token))
         return payload
     except ValueError as e:
         raise HTTPException(

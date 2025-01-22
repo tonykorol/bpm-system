@@ -20,7 +20,7 @@ class Settings(BaseSettings):
 
     JWT_SECRET: str = Field(..., env="JWT_SECRET")
     JWT_ALGORITHM: str = 'HS256'
-    token_expires_minutes: int = 30
+    token_expires_minutes: int = 1440
 
     @property
     def DB_URL(self) -> str:
