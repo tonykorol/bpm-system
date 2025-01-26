@@ -24,7 +24,7 @@ class DepartmentService(BaseService):
             bool: True if the department has child departments, False otherwise.
 
         """
-        return await self.uow.department.check_department_has_child(department)
+        return await self.repository.check_department_has_child(department)
 
     @transaction_mode
     async def create_department(self, department_data: DepartmentCreateRequest) -> DepartmentModel:
@@ -37,7 +37,7 @@ class DepartmentService(BaseService):
             DepartmentModel: The newly created department object.
 
         """
-        new_department: DepartmentModel = await self.uow.department.create_department(department_data)
+        new_department: DepartmentModel = await self.repository.create_department(department_data)
         return new_department
 
     @transaction_mode
@@ -54,7 +54,7 @@ class DepartmentService(BaseService):
             HTTPException: If the department is not found.
 
         """
-        department: DepartmentModel = await self.uow.department.get_by_query_one_or_none(id=dep_id)
+        department: DepartmentModel = await self.repository.get_by_query_one_or_none(id=dep_id)
         if not department:
             raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Invalid department id")
         return department
@@ -97,7 +97,7 @@ class DepartmentService(BaseService):
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
                 detail="The department cannot be deleted because it has child departments")
-        await self.uow.department.delete_one_by_id(dep_id)
+        await self.repository.delete_one_by_id(dep_id)
         return True
 
     @transaction_mode
@@ -125,7 +125,7 @@ class DepartmentService(BaseService):
             bool: True if the user is in the department, False otherwise.
 
         """
-        return await self.uow.department.check_user_in_department(department_id, user_id)
+        return await self.repository.check_user_in_department(department_id, user_id)
 
     @transaction_mode
     async def set_department_head(self, payload: DepartmentSetHeadRequest) -> DepartmentModel:
@@ -143,13 +143,13 @@ class DepartmentService(BaseService):
         """
         department: DepartmentModel = await self.get_department_by_id(payload.department_id)
 
-        if await self.check_department_has_head:
+        if await self.check_department_has_head(department):
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="Department already has head user")
 
         if await self.check_user_in_department(payload.department_id, payload.user_id):
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="The user must be in the department")
 
-        updated_department: DepartmentModel = await self.uow.department.set_department_head(
+        updated_department: DepartmentModel = await self.repository.set_department_head(
             department,
             payload.user_id,
         )

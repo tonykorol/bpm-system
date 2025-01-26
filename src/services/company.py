@@ -55,7 +55,7 @@ class CompanyService(BaseService):
             HTTPException: If a company with the same name already exists.
 
         """
-        company_exist = await self.uow.company.get_by_query_one_or_none(name=payload.company_name)
+        company_exist = await self.repository.get_by_query_one_or_none(name=payload.company_name)
         if company_exist:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
@@ -63,7 +63,7 @@ class CompanyService(BaseService):
             )
 
         company_data = CompanyCreateSchema(name=payload.company_name)
-        company: CompanyModel = await self.uow.company.add_one_and_get_object(**company_data.model_dump())
+        company: CompanyModel = await self.repository.add_one_and_get_object(**company_data.model_dump())
         user_data = UserCreateSchema(
             first_name=payload.first_name,
             last_name=payload.last_name,

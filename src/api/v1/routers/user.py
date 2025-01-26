@@ -22,6 +22,8 @@ router = APIRouter(prefix="/user", tags=["user"])
     path="/create-user",
     status_code=HTTP_201_CREATED,
     response_model=UserCreateWithoutPasswordResponse,
+    description="Create a new user without setting a password. Requires user details except for password. "
+                "Returns the created user's information.",
 )
 async def create_user_without_password(
         new_user: UserCreateWithoutPasswordRequest,
@@ -36,6 +38,8 @@ async def create_user_without_password(
     path="/set-password",
     status_code=HTTP_200_OK,
     response_model=UserSetPasswordResponse,
+    description="Set or update a user's password. Requires the new password and user credentials. "
+                "Returns the updated user's information.",
 )
 async def set_user_password(
         credentials: UserSetPasswordRequest,
@@ -49,6 +53,7 @@ async def set_user_password(
     path="/me",
     status_code=HTTP_200_OK,
     response_model=GetMeResponse,
+    description="Retrieve the currently authenticated user's details. Returns information about the authenticated user.",
 )
 async def get_me(current_user: TokenPayload = Depends(get_current_user)):
     return GetMeResponse(**current_user.model_dump())
@@ -58,6 +63,8 @@ async def get_me(current_user: TokenPayload = Depends(get_current_user)):
     path="/me",
     status_code=HTTP_200_OK,
     response_model=UserUpdateResponse,
+    description="Update the currently authenticated user's information. Requires updated user data. "
+                "Returns the updated user details.",
 )
 async def update_me(
         update_data: UserUpdateRequest,

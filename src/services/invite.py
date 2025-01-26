@@ -27,7 +27,7 @@ class InviteService(BaseService):
             InviteModel: The unused invite object if found, otherwise None.
 
         """
-        return await self.uow.invite.get_by_query_one_or_none(email=email, is_used=False)
+        return await self.repository.get_by_query_one_or_none(email=email, is_used=False)
 
     @transaction_mode
     async def create_and_send_invite(self, email: str):
@@ -64,7 +64,7 @@ class InviteService(BaseService):
             HTTPException: If the invite token is invalid or has already been used.
 
         """
-        existing_invite: InviteModel = await self.uow.invite.get_by_query_one_or_none(token=token, email=email, is_used=False)
+        existing_invite: InviteModel = await self.repository.get_by_query_one_or_none(token=token, email=email, is_used=False)
         if existing_invite:
             existing_invite.is_used = True
             return True
@@ -82,7 +82,7 @@ class InviteService(BaseService):
 
         """
         invite_token = "".join(secrets.choice(string.digits) for _ in range(6))
-        return await self.uow.invite.add_one_and_get_object(token=invite_token, email=email)
+        return await self.repository.add_one_and_get_object(token=invite_token, email=email)
 
     @staticmethod
     async def send_invite(invite: InviteModel):

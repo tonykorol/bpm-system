@@ -53,14 +53,14 @@ class UserService(BaseService):
         """
         await self.check_user_is_company_admin(current_user)
 
-        user_exist = await self.uow.user.get_by_query_one_or_none(email=user.email)
+        user_exist = await self.repository.get_by_query_one_or_none(email=user.email)
         if user_exist:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
                 detail="User already exists",
             )
 
-        user: UserModel = await self.uow.user.add_one_and_get_object(**user.model_dump(), company_id=company_id)
+        user: UserModel = await self.repository.add_one_and_get_object(**user.model_dump(), company_id=company_id)
 
         await self.send_set_password_email(user)
 
@@ -91,14 +91,14 @@ class UserService(BaseService):
            HTTPException: If the user does not exist.
 
         """
-        user = await self.uow.user.get_by_query_one_or_none(email=credentials.email)
+        user = await self.repository.get_by_query_one_or_none(email=credentials.email)
         if not user:
             raise HTTPException(
                 status_code=HTTP_400_BAD_REQUEST,
                 detail="User does not exists",
             )
         password = hash_password(credentials.password).decode()
-        return await self.uow.user.update_one_by_id(user.id, password=password)
+        return await self.repository.update_one_by_id(user.id, password=password)
 
     @transaction_mode
     async def update_user_info(self, current_user: TokenPayload, update_data: UserUpdateRequest) -> UserModel:
@@ -112,8 +112,8 @@ class UserService(BaseService):
             UserModel: The updated user object.
 
         """
-        user: UserModel = await self.uow.user.get_by_query_one_or_none(email=current_user.email)
-        await self.uow.user.update_one_by_id(user.id, first_name=update_data.first_name, last_name=update_data.last_name)
+        user: UserModel = await self.repository.get_by_query_one_or_none(email=current_user.email)
+        await self.repository.update_one_by_id(user.id, first_name=update_data.first_name, last_name=update_data.last_name)
         return user
 
     @transaction_mode

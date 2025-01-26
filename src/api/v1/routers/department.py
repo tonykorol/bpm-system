@@ -20,6 +20,8 @@ router = APIRouter(prefix="/department", tags=["department"])
     path="/",
     status_code=HTTP_201_CREATED,
     response_model=DepartmentResponse,
+    description="Create a new department. Requires a department name and other relevant details. "
+                "Returns the created department's details.",
 )
 async def create_department(
         department: DepartmentCreateRequest,
@@ -34,6 +36,8 @@ async def create_department(
     path="/{dep_id}",
     status_code=HTTP_200_OK,
     response_model=DepartmentResponse,
+    description="Retrieve details of a specific department by its ID. "
+                "Returns the department's information if found.",
 )
 async def get_department(
         dep_id: int,
@@ -48,6 +52,8 @@ async def get_department(
     path="/{dep_id}",
     status_code=HTTP_200_OK,
     response_model=DepartmentResponse,
+    description="Update details of an existing department by its ID. "
+                "Accepts updated data for the department and returns the modified department.",
 )
 async def update_department(
         dep_id: int,
@@ -63,6 +69,7 @@ async def update_department(
     path="/{dep_id}",
     status_code=HTTP_200_OK,
     response_model=DepartmentDeleteResponse,
+    description="Delete a department by its ID. Returns the status of the deletion process.",
 )
 async def delete_department(
         dep_id: int,
@@ -77,6 +84,9 @@ async def delete_department(
     path="/set_head",
     status_code=HTTP_200_OK,
     response_model=DepartmentResponse,
+    description="Assign a head to a specific department. "
+                "Accepts the department ID and the head's user ID. "
+                "Returns the updated department details.",
 )
 async def set_department_head(
         payload: DepartmentSetHeadRequest,

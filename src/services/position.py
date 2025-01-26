@@ -24,7 +24,7 @@ class PositionService(BaseService):
             PositionModel: The newly created position object.
 
         """
-        position: PositionModel = await self.uow.position.add_one_and_get_object(**position_data.model_dump())
+        position: PositionModel = await self.repository.add_one_and_get_object(**position_data.model_dump())
         return position
 
     @transaction_mode
@@ -41,7 +41,7 @@ class PositionService(BaseService):
             HTTPException: If the position is not found.
 
         """
-        position: PositionModel = await self.uow.position.get_by_query_one_or_none(id=position_id)
+        position: PositionModel = await self.repository.get_by_query_one_or_none(id=position_id)
         if not position:
             raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail="Invalid position id")
         return position
@@ -58,7 +58,7 @@ class PositionService(BaseService):
             PositionModel: The updated position object.
 
         """
-        updated_position: PositionModel = await self.uow.position.update_one_by_id(
+        updated_position: PositionModel = await self.repository.update_one_by_id(
             pos_id,
             **position_data.model_dump(),
         )
@@ -76,7 +76,7 @@ class PositionService(BaseService):
 
         """
         await self.get_position_by_id(position_id)
-        await self.uow.position.delete_one_by_id(position_id)
+        await self.repository.delete_one_by_id(position_id)
         return True
 
     @transaction_mode
@@ -91,7 +91,7 @@ class PositionService(BaseService):
             bool: True if the user is in the company associated with the position, False otherwise.
 
         """
-        return await self.uow.position.check_user_in_company(user_id, position_id)
+        return await self.repository.check_user_in_company(user_id, position_id)
 
     @transaction_mode
     async def assign_user_to_position(self, payload: PositionAssignRequest) -> PositionModel:
@@ -110,5 +110,5 @@ class PositionService(BaseService):
         position: PositionModel = await self.get_position_by_id(payload.position_id)
         if not self.check_user_in_company(payload.user_id, payload.position_id):
             raise HTTPException(status_code=HTTP_400_BAD_REQUEST, detail="User must be in requested company")
-        await self.uow.position.assign_user_to_position(**payload.model_dump())
+        await self.repository.assign_user_to_position(**payload.model_dump())
         return position

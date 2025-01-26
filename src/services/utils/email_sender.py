@@ -23,4 +23,7 @@ def send_email(email: str, subject: str, body: str):
 
     with smtplib.SMTP_SSL(settings.SMTP_SERVER, settings.SMTP_PORT) as server:
         server.login(settings.SMTP_USER, settings.SMTP_PASS)
-        server.sendmail(settings.SMTP_USER, email, msg.as_string())
+        try:
+            server.sendmail(settings.SMTP_USER, email, msg.as_string())
+        except smtplib.SMTPDataError as e:
+            print(f"Failed to send email: {e}")

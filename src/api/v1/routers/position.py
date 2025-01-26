@@ -21,6 +21,8 @@ router = APIRouter(prefix="/position", tags=["Positions"])
     path="/",
     status_code=HTTP_201_CREATED,
     response_model=PositionResponse,
+    description="Create a new position. Requires position details such as name and department. "
+                "Returns the created position's details.",
 )
 async def create_position(
         position_data: PositionCreateRequest,
@@ -35,6 +37,8 @@ async def create_position(
     path="/{pos_id}",
     status_code=HTTP_200_OK,
     response_model=PositionResponse,
+    description="Retrieve details of a specific position by its ID. "
+                "Returns the position's information if found.",
 )
 async def get_position(
         pos_id: int,
@@ -49,6 +53,8 @@ async def get_position(
     path="/{pos_id}",
     status_code=HTTP_200_OK,
     response_model=PositionResponse,
+    description="Update details of an existing position by its ID. "
+                "Accepts updated data for the position and returns the modified position.",
 )
 async def update_position(
         pos_id: int,
@@ -64,6 +70,7 @@ async def update_position(
     path="/{pos_id}",
     status_code=HTTP_200_OK,
     response_model=PositionDeleteResponse,
+    description="Delete a position by its ID. Returns the status of the deletion process.",
 )
 async def delete_position(
         pos_id: int,
@@ -78,6 +85,8 @@ async def delete_position(
     path="/assign",
     status_code=HTTP_200_OK,
     response_model=PositionAssignResponse,
+    description="Assign a user to a specific position. "
+                "Requires the user ID and the position ID. Returns the updated position details and user assignment.",
 )
 async def assign_user_to_position(
         payload: PositionAssignRequest,

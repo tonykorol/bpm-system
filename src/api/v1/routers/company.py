@@ -20,6 +20,8 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
     path="/check_account/{email}",
     status_code=HTTP_200_OK,
     response_model=CheckAccountResponse,
+    description="Check if an email is available for registration. "
+                "Returns whether the email is free to use or already taken.",
 )
 async def check_account(
         payload: CheckAccountRequest = Depends(CheckAccountRequest),
@@ -33,6 +35,8 @@ async def check_account(
     path="/sign-up",
     status_code=HTTP_200_OK,
     response_model=SignUpResponse,
+    description="Initiate the sign-up process using an invitation token. "
+                "Verifies the validity of the token and the associated account.",
 )
 async def sign_up(
         payload: SignUpRequest,
@@ -45,6 +49,9 @@ async def sign_up(
 @router.post(
     path="/sign-up-complete",
     status_code=HTTP_201_CREATED,
+    response_model=SignUpCompleteResponse,
+    description="Complete the sign-up process by creating a company and associated user account. "
+                "Returns the created company's details.",
 )
 async def sign_up_complete(
         payload: SignUpCompleteRequest,

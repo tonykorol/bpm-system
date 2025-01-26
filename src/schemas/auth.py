@@ -23,9 +23,24 @@ class SignUpResponse(BaseModel):
 class SignUpCompleteRequest(BaseModel):
     account: EmailStr
     password: str
-    first_name: str = Field(..., min_length=1, max_length=50)
-    last_name: str = Field(..., min_length=1, max_length=50)
-    company_name: str = Field(..., min_length=1, max_length=50)
+    first_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        description="First name must be between 1 and 50 characters."
+    )
+    last_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        description="Last name must be between 1 and 50 characters."
+    )
+    company_name: str = Field(
+        ...,
+        min_length=1,
+        max_length=50,
+        description="Company name must be between 1 and 50 characters."
+    )
 
 
 class SignUpCompleteResponse(BaseModel):

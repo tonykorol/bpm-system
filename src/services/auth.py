@@ -28,7 +28,7 @@ class AuthService(BaseService):
             UserModel | None: The user object if authentication is successful, otherwise None.
 
         """
-        user = await self.uow.user.get_by_query_one_or_none(email=email)
+        user = await self.repository.get_by_query_one_or_none(email=email)
         if user and verify_password(password, user.password.encode("utf-8")):
             return user
         return None
@@ -56,6 +56,12 @@ class AuthService(BaseService):
         token = encode_jwt(payload)
         return token
 
+# Инициализируем Singleton объект
+auth_service_singleton = AuthService()
+
+# Функция для внедрения зависимости
+def get_auth_service() -> AuthService:
+    return auth_service_singleton
 
 oauth2_scheme = HTTPBearer()
 
